@@ -1,3 +1,6 @@
-logo_logo
-menu_menu
-other_block
+f_form_min
+i_img
+m_menu_b
+ot_block_sh
+ot_block_t
+ot_prw_b

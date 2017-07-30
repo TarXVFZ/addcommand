@@ -28,6 +28,7 @@ class Com_class
 		//переменная для хранения размеров блоков
 		//или элементов
 		string width;
+		string height;
 
 		//размер векторов
 		int size;
@@ -39,6 +40,7 @@ class Com_class
 		Com_class()
 		{
 			width = "";
+			height = "";
 			size = 0;
 			//загрузка имён и путей шаблонов
 			ifstream file_template("list_template.txt");
@@ -93,9 +95,6 @@ class Com_class
 				}
 			}
 			
-//			for (int k=0; k<size_vector; k++)
-//				cout << cmds[k] << " ";
-//			cout << endl;
 			//обработка команд
 			for (int i=0; i<size_vector; i++)
 			{
@@ -112,6 +111,20 @@ class Com_class
 					
 					cmds[i] = "cr";
 					width = str_cr;
+				}
+				
+				if (cmds[i][0] == 'c' && cmds[i][1] == 'i')
+				{
+					string str_cr="";
+					cmds[i] += " ";
+					for (int k=5; k<cmds[i].length(); k++)
+					{
+						if (cmds[i][k] != ' ')
+							str_cr += cmds[i][k];
+					}
+					
+					cmds[i] = "cimg";
+					height = str_cr;
 				}
 				
 				bool container = false;
@@ -167,6 +180,8 @@ class Com_class
 			string dop_html = "";
 			if (commands[index].name == "cr")
 				dop_html = width + "px\">\n";
+			if (commands[index].name == "cimg")
+				dop_html = height + "px\">\n";
 				
 			count_commands += "----";
 	
@@ -218,7 +233,7 @@ int main()
 	commands[3].html = "<div class=\"cr\" style=\"width:";
 	
 	commands[4].name = "cimg";
-	commands[4].html = "<div class=\"cimg\">\n";
+	commands[4].html = "<div class=\"cimg\" style=\"height:";
 	
 	
 	//новый объект
@@ -227,13 +242,15 @@ int main()
 	
 	//переменная со всем шаблоном
 	string html;
+	string html_start="<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Acronym</title>\n<link rel=\"stylesheet\" href=\"css/acronym.css\">\n</head>\n";
+	string html_stop="\n<script src=\"js/jquery.js\"></script>\n<script src=\"js/acronym.js\"></script>\n</body>\n</html>";
 	
 	for (;;) {
 	cout << "Program start!!!!!!!!\n\n> ";
 	//считывание первой команды
 	getline(cin, html);
 
-	html = command.getting_command(html);
+	html = html_start + command.getting_command(html) + html_stop;
 	
 	//сохранение шаблона в файле index.html
 	ofstream index_html("html/index.html");
