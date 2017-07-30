@@ -15,19 +15,19 @@ int size_file_vector = 0;
 
 string count_commands = "";
 
-const int N=3;
+const int N=5;
 Command commands[N];
 
 class Com_class
 {
 	private:
-//		//вектор для директории
-//		vector<string> dir_template();
-//		//вектор для наименований шаблонов
-//		vector<string> name_template();
-	
 		string *dir_template = new string[10];
 		string *name_template = new string[10];
+		
+		
+		//переменная для хранения размеров блоков
+		//или элементов
+		string width;
 
 		//размер векторов
 		int size;
@@ -38,6 +38,7 @@ class Com_class
 	public:
 		Com_class()
 		{
+			width = "";
 			size = 0;
 			//загрузка имён и путей шаблонов
 			ifstream file_template("list_template.txt");
@@ -92,11 +93,29 @@ class Com_class
 				}
 			}
 			
+//			for (int k=0; k<size_vector; k++)
+//				cout << cmds[k] << " ";
+//			cout << endl;
 			//обработка команд
 			for (int i=0; i<size_vector; i++)
 			{
+				
+				if (cmds[i][0] == 'c' && cmds[i][1] == 'r')
+				{
+					string str_cr="";
+					cmds[i] += " ";
+					for (int k=3; k<cmds[i].length(); k++)
+					{
+						if (cmds[i][k] != ' ')
+							str_cr += cmds[i][k];
+					}
+					
+					cmds[i] = "cr";
+					width = str_cr;
+				}
+				
 				bool container = false;
-				for (int j=0; j<3; j++)
+				for (int j=0; j<N; j++)
 				{
 					if (commands[j].name == cmds[i])
 					{
@@ -145,6 +164,10 @@ class Com_class
 		/////////////////////////////////////
 		string getting_container(int index)
 		{
+			string dop_html = "";
+			if (commands[index].name == "cr")
+				dop_html = width + "px\">\n";
+				
 			count_commands += "----";
 	
 			//тут сохраняется html
@@ -165,7 +188,7 @@ class Com_class
 			
 			count_commands = count_commands.substr(0, count_commands.length()-4);
 			
-			return commands[index].html + html + "</div>\n";
+			return commands[index].html + dop_html + html + "</div>\n";
 		}
 		
 		//Деструктор
@@ -190,6 +213,12 @@ int main()
 	
 	commands[2].name = "cw";
 	commands[2].html = "<div class=\"cw\">\n";
+	
+	commands[3].name = "cr";
+	commands[3].html = "<div class=\"cr\" style=\"width:";
+	
+	commands[4].name = "cimg";
+	commands[4].html = "<div class=\"cimg\">\n";
 	
 	
 	//новый объект
