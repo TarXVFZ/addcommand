@@ -193,13 +193,22 @@ class Com_class
 			cin >> count_block;
 			cin.get();
 		
-			string line;
-			for (int i=0; i<count_block; i++)
+			if (count_block !=0)
 			{
-				cout << count_commands << "(" << i+1 << ")> ";
+				string line;
+				for (int i=0; i<count_block; i++)
+				{
+					cout << count_commands << "(" << i+1 << ")> ";
+					getline(cin, line);
+					html += "	<div class=\"clm\">\n" + getting_command(line) + "    </div>\n";
+				}
+			} else {
+				string line;
+				cout << count_commands << "(" << 0 << ")> ";
 				getline(cin, line);
-				html += "	<div class=\"clm\">\n" + getting_command(line) + "    </div>\n";
+				html += "	<div class=\"clm\" style=\"width:100%\">\n" + getting_command(line) + "    </div>\n";
 			}
+				
 			
 			count_commands = count_commands.substr(0, count_commands.length()-4);
 			
