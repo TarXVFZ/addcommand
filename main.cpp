@@ -253,18 +253,83 @@ int main()
 	string html;
 	string html_start="<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<title>Acronym</title>\n<link rel=\"stylesheet\" href=\"css/acronym.css\">\n</head>\n";
 	string html_stop="\n<script src=\"js/jquery.js\"></script>\n<script src=\"js/acronym.js\"></script>\n</body>\n</html>";
+	string before_html = "";
+	string reserv_html[100];
+	for (int i=0; i<100; i++)
+		reserv_html[i] = "";
+	int reserv_html_index = -1;
+	
+	
+	some_keys:
 	
 	for (;;) {
-	cout << "Program start!!!!!!!!\n\n> ";
-	//считывание первой команды
-	getline(cin, html);
-
-	html = html_start + command.getting_command(html) + html_stop;
+		string first_command;
+		cout << "\nProgram start!!!!!!!!\n\n> ";
+		//считывание первой команды
+		getline(cin, first_command);
 	
-	//сохранение шаблона в файле index.html
-	ofstream index_html("html/index.html");
-	index_html << html;
-	index_html.close();
+		reserv_html_index++;
+		reserv_html[reserv_html_index] = command.getting_command(first_command);
+		html = before_html + reserv_html[reserv_html_index];
+	
+		cout << reserv_html_index << endl;
+		
+		//отчиска предыдущей записи html
+		before_html = "";
+		//сохранение шаблона в файле index.html
+		ofstream index_html("html/index.html");
+		index_html << html_start + html + html_stop;
+		index_html.close();
+		
+		repeat_q:
+			
+		cout << "//////////////\nEnter command:\n\n1- add more\n2- finish off\n3- clear html\n4- back html\n5- future html\n>";
+		int number_command;
+		cin >> number_command;
+		cin.get();
+		cout << "//////////////\n";
+		
+		if (number_command == 1)
+		{
+			if (reserv_html_index-1 != -1)
+			{
+				string some_str = reserv_html[reserv_html_index-1] + reserv_html[reserv_html_index];
+				reserv_html[reserv_html_index] = some_str;
+			}
+			before_html = reserv_html[reserv_html_index];
+		} else if (number_command == 2)
+		{
+			cout << "Goodbye!";
+			break;
+		} else if (number_command == 3)
+			goto some_keys;
+		else if (number_command == 4 && reserv_html_index-1 != -1)
+		{
+			reserv_html_index--;
+			before_html = reserv_html[reserv_html_index];
+			
+			ofstream reserv_output_html("html/index.html");
+			reserv_output_html << html_start + before_html + html_stop;
+			reserv_output_html.close();
+		}
+		else if (number_command == 5)
+		{
+			if (reserv_html[reserv_html_index+1] != "" && reserv_html_index+1 != 100)
+			{
+				reserv_html_index++;
+				before_html = reserv_html[reserv_html_index];
+				
+				ofstream reserv_output_html("html/index.html");
+				reserv_output_html << html_start + before_html + html_stop;
+				reserv_output_html.close();
+			} else
+				cout << "No future changes\n";
+		}
+		else {
+			cout << "Are you realy stupied man? I don't know English, sorry =)";
+			goto repeat_q;
+		}
+			
 	}
 	
 	return 0;
